@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import FAB from '../components/Fab';
 import Loader from '../components/Loader';
+import { LotteryDetailsError } from '../components/LotteryDetailsError';
 import { AddLotteryNavigationProp } from '../types';
 import { colors } from '../colors';
 import LotteryList from '../components/LotteryList';
@@ -26,6 +27,16 @@ const Home = () => {
 
   if (lotteries.loading) {
     return <Loader />;
+  }
+
+  if (lotteries.error) {
+    return (
+      <LotteryDetailsError
+        message="We were unable to load the lotteries."
+        buttonTitle="Try again"
+        onButtonPress={lotteries.fetchLotteries}
+      />
+    );
   }
 
   const handleSelect = (lotteryId: string) => {
