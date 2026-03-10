@@ -14,6 +14,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Lottery } from '../types';
 import { LotteryDetailsNavigationProp } from '../types';
 import { colors } from '../colors';
+import {
+  useLotteriesSortingContext,
+  LotteryListSortingOptions,
+} from '../contexts/LotteriesSortingContext';
 import SearchInput from './SearchInput';
 
 type Props = {
@@ -33,6 +37,7 @@ const LotteryList = ({
   registeredLotteries,
 }: Props) => {
   const navigation = useNavigation<LotteryDetailsNavigationProp>();
+  const { selectedSorting } = useLotteriesSortingContext();
   const [filter, setFilter] = useState('');
   const { width } = useWindowDimensions();
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -56,8 +61,15 @@ const LotteryList = ({
   });
 
   const filteredLotteries = useMemo(
-    () => lotteries?.filter((lottery) => lottery.name.includes(filter)),
-    [filter, lotteries],
+    () =>
+      lotteries
+        ?.filter((lottery) => lottery.name.includes(filter))
+        .sort((a, b) =>
+          selectedSorting === LotteryListSortingOptions.Ascending
+            ? Number(a.prize) - Number(b.prize)
+            : Number(b.prize) - Number(a.prize),
+        ),
+    [filter, lotteries, selectedSorting],
   );
 
   const renderItem = ({ item }: { item: Lottery }) => {
