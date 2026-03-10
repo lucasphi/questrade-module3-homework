@@ -49,6 +49,20 @@ export async function getLottieries() {
   }
 }
 
+export async function getLotteryById(lotteryId: string) {
+  try {
+    const response = await fetch(`${API_URL}/lottery/${lotteryId}`);
+
+    const body = (await response.json()) as Lottery;
+
+    return body;
+  } catch (error) {
+    console.error(error);
+
+    throw error;
+  }
+}
+
 export async function registerToLottery({
   name,
   lotteryId,
